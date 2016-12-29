@@ -1,0 +1,52 @@
+                            | 
+                            | 	# Stage 1: irmov
+0x000:                      | 	.pos 0
+0x000: 10                   | 	nop
+                            | 
+0x001: 30f0f300             | 	irmovw $0xf3, %ax #R[0]=0xf3
+0x005: 30f1eeff             | 	irmovw $0xffee, %cx #R[1]=0xffee
+0x009: 30f20f00             | 	irmovw $0xf, %dx #R[2]=0xf
+0x00d: 2013                 | 	rrmovw %cx, %bx #R[3]=0xffee
+                            | 
+                            | 
+                            | 
+                            | 	# stage 2: aritmetica
+                            | 
+0x00f: 10                   | 	nop
+                            | 
+0x010: 6023                 | 	addw	%dx, %bx #R[3]=0xffee+0xf=0xfffd
+0x012: 6120                 | 	subw	%dx, %ax #R[0]=0xf-0xf3=0x-e4
+0x014: 6221                 | 	andw	%dx, %cx #R[1]=0xf & 0xffee =e
+0x016: 6302                 | 	xorw	%ax, %dx #R[2]=-e4 ^ 0xf=-ed
+                            | 
+                            | 
+                            | 
+                            | 	# stage 3: Memoria
+                            | 
+0x018: 10                   | 	nop
+                            | 
+0x019: 30f10200             | 	irmovw	$0x2, %cx #R[1]=0x2
+0x01d: 30f2f300             | 	irmovw	$0xf3, %dx #R[2]=0xf3
+0x021: 40210000             | 	rmmovw	%dx, (%cx) #M[1]=0xf3
+0x025: 30f20000             | 	irmovw	$0x0, %dx #R[2]=0x0
+0x029: 50210000             | 	mrmovw	(%cx), %dx #R[2]=0xf3
+                            | 
+                            | 
+                            | 	# stage 4: CC, jumps y lo anterior
+                            | 
+0x02d: 10                   | 	nop
+                            | 
+0x02e: 6333                 | 	xorw	%bx, %bx #R[3]= 0xfffd ^ 0xfffd=0x0
+0x030: 30f10100             | 	irmovw	$0x1, %cx #R[1]=0x1
+0x034: 30f20400             | 	irmovw	$0x4, %dx #R[2]=0x4
+0x038: 704100               | 	jmp	0x41 #jump to address 0x41
+0x03b: 6013                 | 	addw	%cx, %bx #R[3]=0x1+0x0=0x1
+0x03d: 40330000             | 	rmmovw	%bx, (%bx) #M[3]=0x1
+0x041: 2030                 | 	rrmovw	%bx, %ax #R[0]=0x1
+0x043: 6120                 | 	subw	%dx, %ax #R[0]=0x4-0x1=0x3
+0x045: 713b00               | 	jle	0x3b # jump to address 0x3b
+                            | 
+0x048: 10                   | 	nop
+                            | 
+                            | 	
+                            | 

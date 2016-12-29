@@ -1,0 +1,52 @@
+
+	# Stage 1: irmov
+	.pos 0
+	nop
+
+	irmovw $0xf3, %ax #R[0]=0xf3
+	irmovw $0xffee, %cx #R[1]=0xffee
+	irmovw $0xf, %dx #R[2]=0xf
+	rrmovw %cx, %bx #R[3]=0xffee
+
+
+
+	# stage 2: aritmetica
+
+	nop
+
+	addw	%dx, %bx #R[3]=0xffee+0xf=0xfffd
+	subw	%dx, %ax #R[0]=0xf-0xf3=0x-e4
+	andw	%dx, %cx #R[1]=0xf & 0xffee =e
+	xorw	%ax, %dx #R[2]=-e4 ^ 0xf=-ed
+
+
+
+	# stage 3: Memoria
+
+	nop
+
+	irmovw	$0x2, %cx #R[1]=0x2
+	irmovw	$0xf3, %dx #R[2]=0xf3
+	rmmovw	%dx, (%cx) #M[1]=0xf3
+	irmovw	$0x0, %dx #R[2]=0x0
+	mrmovw	(%cx), %dx #R[2]=0xf3
+
+
+	# stage 4: CC, jumps y lo anterior
+
+	nop
+
+	xorw	%bx, %bx #R[3]= 0xfffd ^ 0xfffd=0x0
+	irmovw	$0x1, %cx #R[1]=0x1
+	irmovw	$0x4, %dx #R[2]=0x4
+	jmp	0x41 #jump to address 0x41
+	addw	%cx, %bx #R[3]=0x1+0x0=0x1
+	rmmovw	%bx, (%bx) #M[3]=0x1
+	rrmovw	%bx, %ax #R[0]=0x1
+	subw	%dx, %ax #R[0]=0x4-0x1=0x3
+	jle	0x3b # jump to address 0x3b
+
+	nop
+
+	
+
